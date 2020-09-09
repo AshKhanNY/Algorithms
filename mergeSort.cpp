@@ -22,21 +22,17 @@ void mergeSort(node* head);
 void mergeSort(vector<int>& vec);
 
 // Printer and RNG
-int randNum();
 void printer(const vector<int> vec);
 void printer(node* head);
 
 // Driver
 int main(){
     vector<int> test;
-    for (int i = 0; i < 1000; ++i) test.push_back(randNum());
+    srand(time(0)); 
+    for(int i = 0; i < 10; i++) test.push_back(rand() % 100);
+    printer(test);
     mergeSort(test);
     printer(test);
-}
-
-int randNum(){
-    srand((unsigned)time(0)); // Prevents predictable random num
-    return (rand() % 1000) + 1;
 }
 
 void mergeSort(vector<int>& vec){
@@ -48,23 +44,24 @@ void mergeSort(vector<int>& vec){
     mergeSort(low);
     mergeSort(high);
     vector<int> aux(vec.size());
-    int i, j, k;
-    for (i = j = k = 0; i < low.size() || j < high.size() || k < aux.size(); ++k){
-        if (i+1 == low.size()){ aux[k] = low[j]; ++j; }
-        else if (j+1 == low.size()){ aux[k] = low[i]; ++i; }
-        else if (low[i] > high[j]){ aux[k] = high[j]; ++j; }
-        else { aux[k] = low[i]; ++i; }
+    int low_ind, high_ind, aux_ind;
+    for (low_ind = high_ind = aux_ind = 0; aux_ind < aux.size(); ++aux_ind){
+        if (low_ind == low.size()){ aux[aux_ind] = high[high_ind]; ++high_ind; }
+        else if (high_ind == high.size()){ aux[aux_ind] = low[low_ind]; ++low_ind; }
+        else if (low[low_ind] > high[high_ind]){ aux[aux_ind] = high[high_ind]; ++high_ind; }
+        else if (low[low_ind] <= high[high_ind]){ aux[aux_ind] = low[low_ind]; ++low_ind; }
     }
+    vec = aux;
 }
 
 void printer(const vector<int> vec) {
-    printf("[");
-	for (auto i : vec) printf("%i,", i);
+    printf("[ ");
+	for (auto i : vec) printf("%i ", i);
 	printf("]\n");
 }
 
 void printer(node* head) {
     printf("[ ");
-	for (node* i = head; i != NULL; i = i->next) printf("%i,", i->val);
+	for (node* i = head; i != NULL; i = i->next) printf("%i ", i->val);
 	printf("]\n");
 }
