@@ -15,7 +15,7 @@ int i;
 
 //Driver function
 int main(){
-	int A[20];
+    int A[20];
     srand(time(0)); //Prevents predictable random numbers
     for(i = 0; i < 20; i++) A[i] = (rand() % 100);
     int aSize = sizeof(A)/sizeof(A[0]);
