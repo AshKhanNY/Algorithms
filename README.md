@@ -4,3 +4,4 @@ Projects related to algorithms.
 - [Merge Sort](mergeSort.cpp)
 - [Bubble Sort](bubbleSort.cpp)
 - [Selection Sort](selectionSort.cpp)
+- [Quick Sort](quickSort.cpp)
