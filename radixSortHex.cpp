@@ -8,7 +8,7 @@ e-mail to phjmbrass@gmail.com. Do not share code with other students.
 // Ashraq Khan // 10.05.2020 
 // Homework 2 CS 22000 (Algorithms)
 
-/*
+
 #include<cstdio>
 #include<cstdlib>
 #include<ctime>
@@ -140,4 +140,3 @@ void concatenate(int* A, LinkedList* B) {
         B[j].clear();
     }
 }
-*/
