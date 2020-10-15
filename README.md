@@ -5,3 +5,4 @@ Projects related to algorithms.
 - [Bubble Sort](bubbleSort.cpp)
 - [Selection Sort](selectionSort.cpp)
 - [Quick Sort](quickSort.cpp)
+- [Radix Sort](radixSortHex.cpp)
