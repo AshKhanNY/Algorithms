@@ -1,5 +1,3 @@
-// Updated for malloc
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -40,6 +38,7 @@ void sort(int* A, int n) {
     bucket = (int*)malloc(HEXMAX * sizeof(int));
     for (i = 0; i < HEXMAX; ++i) bucket[i] = 0;
     output = (int*)malloc(n * sizeof(int));
+    for (i = 0; i < n; ++i) bucket[i] = 0;
     i = 0;
     while (i < n) bucket[A[i++] & 0xFFFF] += 1;
     // Corrects indices so we can place numbers into bucket in order
@@ -59,6 +58,7 @@ void sort(int* A, int n) {
     while (i < n) A[i] = output[i++];
     // Second round for 2^16 to 2^32
     for (i = 0; i < HEXMAX; ++i) bucket[i] = 0;
+    for (i = 0; i < n; ++i) bucket[i] = 0;
     i = 0;
     while (i < n) bucket[(A[i++] >> 16) & 0xFFFF] += 1;
     last = i = 0;
