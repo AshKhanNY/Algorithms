@@ -1,26 +1,72 @@
-// Mark II
+// Mark III
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
+#include<cstdio>
+#include<cstdlib>
+#include<ctime>
+#include<math.h>
+#include<cassert>
+#include<iostream>
+using namespace std;
 
+int i, k; //Global index variables
 void sort(int* A, int n);
+struct node;
+class LinkedList;
+void concatenate(int* A, LinkedList* B);
+
+struct node {
+    int data;
+    node *next;
+};
+
+class LinkedList {
+private:
+    node *head, *tail;
+public:
+    // Constructor
+    LinkedList() { head = tail = NULL; }
+    // Getter Methods
+    node* getHead() { return head; }
+    node* getTail() { return tail; }
+    // Manipulators
+
+    void insert(int entry) {
+        node* tmp = new node;
+        tmp->data = entry;
+        tmp->next = NULL;
+        if (head == NULL) { head = tmp; tail = tmp; }
+        else {
+            tail->next = tmp;
+            tail = tail->next;
+        }
+    }
+    void clear() {
+        node* remove_ptr;
+        while (head != NULL) {
+            remove_ptr = head;
+            head = head->next;
+            delete remove_ptr;
+        }
+        head = tail = NULL;
+    }
+};
 
 int main()
 {
     int i, offset, j;
-    int* B = (int*)malloc(1e7 * sizeof(int));
+    int size = 1e7;
+    int* B = (int*)malloc(size * sizeof(int));
     time_t t;
     srand((unsigned)time(&t));
-    offset = rand() % 10000000;
-    for (i = 0; i < 10000000; i++)
+    offset = rand() % size;
+    for (i = 0; i < size; i++)
     {
-        B[i] = ((91 * i) % 10000000) + offset;
+        B[i] = ((91 * i) % size) + offset;
     }
     printf("Prepared array of 10 million integers; calling sort\n");
-    sort(B, 10000000);
+    sort(B, size);
     printf("finished sort, now check result\n");
-    for (i = 0, j = 0; i < 10000000; i++)
+    for (i = 0, j = 0; i < size; i++)
         if (B[i] != i + offset) j++;
     if (j == 0)
         printf("Passed Test\n");
@@ -32,38 +78,49 @@ int main()
 }
 
 void sort(int* A, int n) {
-    const int HEXMAX = 16*16*16*16;
-    int i, last, place, shift, temp;
-    // First round for 0 to 2^16
-    // bucket holds number of occurrences where the digit is 0000, 0001,..., FFFF
-    // output depends on bucket for concatenation, places numbers at right index
-    int bucket[HEXMAX];
-    for (i = 0; i < HEXMAX; ++i) bucket[i] = 0;
-    int output[n];
+    const int max = 16*16*16*16;
+    LinkedList* bucket = new LinkedList[max]; // Array of buckets for 0...16
+    // Reads every 4 bits, checks hex digit per bit
+    // Reason why we use 4 bits is b/c we compare n w/ 0xFFFF
+    int digit, buckInd;
+    for (k = 0; k < n; ++k) {
+        // Grabs desired bit
+        digit = A[k] & 0xFFFF;
+        bucket[digit].insert(A[k]);
+    }
+    buckInd = 0;
+    node* tmp;
+    for (k = 0; k < 16 * 16 * 16 * 16; ++k) {
+        tmp = bucket[k].getHead();
+        while (tmp != NULL) {
+            A[buckInd++] = tmp->data;
+            tmp = tmp->next;
+        }
+    }
+    bucket = new LinkedList[max];
+    for (k = 0; k < n; ++k) {
+        // Grabs desired bit
+        digit = (A[k] >> 16) & 0xFFFF;
+        bucket[digit].insert(A[k]);
+    }
+    buckInd = 0;
+    for (k = 0; k < 16 * 16 * 16 * 16; ++k) {
+        tmp = bucket[k].getHead();
+        while (tmp != NULL) {
+            A[buckInd++] = tmp->data;
+            tmp = tmp->next;
+        }
+    }
+}
 
-    i = 0;
-    while (i < n) bucket[(A[i++] & 0xFFFF)]++;
-    // Corrects indices so we can place numbers into bucket in order
-    last = bucket[0];
-    for (int i = 0; i < HEXMAX; ++i, last += bucket[i]) {
-        bucket[i] = last - bucket[i];
+void concatenate(int* A, LinkedList* B) {
+    int buckInd = 0;
+    node* tmp;
+    for (k = 0; k < 16*16*16*16; ++k) {
+        tmp = B[k].getHead();
+        while (tmp != NULL) {
+            A[buckInd++] = tmp->data;
+            tmp = tmp->next;
+        }
     }
-    // Puts the number into output and increments bucket so it's ready to give
-    // next number that has the same digit.
-    for (i = 0; i < n; ++i) { output[bucket[(A[i] & 0xFFFF)]++] = A[i]; }
-    // Override original array with count sorted numbers
-    i = 0;
-    while (i < n) A[i] = output[i++];
-    // Second round for 2^16 to 2^32
-    for (i = 0; i < HEXMAX; ++i) bucket[i] = 0;
-    for (i = 0; i < n; ++i) output[i] = 0;
-    i = 0;
-    while (i < n) bucket[((A[i++] >> 16) & 0xFFFF)]++;
-    last = bucket[0];
-    for (int i = 0; i < HEXMAX; ++i, last += bucket[i]) {
-        bucket[i] = last - bucket[i];
-    }
-    for (i = 0; i < n; ++i) { output[bucket[((A[i] >> 16) & 0xFFFF)]++] = A[i]; }
-    i = 0;
-    while (i < n) A[i] = output[i++];
 }
