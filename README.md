@@ -6,3 +6,4 @@ Projects related to algorithms.
 - [Selection Sort](selectionSort.cpp)
 - [Quick Sort](quickSort.cpp)
 - [Radix Sort](radixSortHex.cpp)
+- [Radix Sort (Array Style)](radixSort.cpp)
