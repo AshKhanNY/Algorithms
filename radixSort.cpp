@@ -31,15 +31,13 @@ int main()
 
 void sort(int* A, int n) {
     const int HEXMAX = 16*16*16*16;
-    int max = A[0];
-    for (int i = 1; i < n; ++i) if (A[i] > max) max = A[i];
     int i, last, place, shift, temp, *bucket, *output;
-    // Checks every 16 bits of number and shifts as much as possible
     // First round for 0 to 2^16
     // bucket holds number of occurrences where the digit is 0000, 0001,..., FFFF
     // output depends on bucket for concatenation, places numbers at right index
-    bucket = new int[HEXMAX] { 0 };
-    output = new int[n];
+    bucket = (int*)malloc(HEXMAX * sizeof(int));
+    for (i = 0; i < HEXMAX; ++i) bucket[i] = 0;
+    output = (int*)malloc(n * sizeof(int));
     i = 0;
     while (i < n) bucket[A[i++] & 0xFFFF] += 1;
     // Corrects indices so we can place numbers into bucket in order
@@ -57,10 +55,8 @@ void sort(int* A, int n) {
     // Override original array with count sorted numbers
     i = 0;
     while (i < n) A[i] = output[i++];
-
     // Second round for 2^16 to 2^32
-    bucket = new int[HEXMAX] { 0 };
-    output = new int[n];
+    for (i = 0; i < HEXMAX; ++i) bucket[i] = 0;
     i = 0;
     while (i < n) bucket[(A[i++] >> 16) & 0xFFFF] += 1;
     last = i = 0;
@@ -74,5 +70,4 @@ void sort(int* A, int n) {
     }
     i = 0;
     while (i < n) A[i] = output[i++];
-    delete[] output, bucket;
 }
