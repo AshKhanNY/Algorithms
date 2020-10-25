@@ -1,4 +1,4 @@
-// Mark I
+// Mark II
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -33,31 +33,24 @@ int main()
 
 void sort(int* A, int n) {
     const int HEXMAX = 16*16*16*16;
-    int i, last, place, shift, temp, *bucket, *output;
+    int i, last, place, shift, temp;
     // First round for 0 to 2^16
     // bucket holds number of occurrences where the digit is 0000, 0001,..., FFFF
     // output depends on bucket for concatenation, places numbers at right index
-    bucket = (int*)malloc(HEXMAX * sizeof(int));
+    int bucket[HEXMAX];
     for (i = 0; i < HEXMAX; ++i) bucket[i] = 0;
-    output = (int*)malloc(n * sizeof(int));
-    for (i = 0; i < n; ++i) output[i] = 0;
+    int output[n];
+
     i = 0;
-    while (i < n) bucket[A[i++] & 0xFFFF] += 1;
+    while (i < n) bucket[(A[i++] & 0xFFFF)]++;
     // Corrects indices so we can place numbers into bucket in order
-    i = 0; last = bucket[0];
-    while (i < HEXMAX) {
-        bucket[i] = last - bucket[i++];
-        last += bucket[i];
+    last = bucket[0];
+    for (int i = 0; i < HEXMAX; ++i, last += bucket[i]) {
+        bucket[i] = last - bucket[i];
     }
     // Puts the number into output and increments bucket so it's ready to give
     // next number that has the same digit.
-    i = 0;
-    while (i < n) {
-        temp = A[i] & 0xFFFF;
-        place = bucket[temp];
-        bucket[temp] += 1;
-        output[place] = A[i++];
-    }
+    for (i = 0; i < n; ++i) { output[bucket[(A[i] & 0xFFFF)]++] = A[i]; }
     // Override original array with count sorted numbers
     i = 0;
     while (i < n) A[i] = output[i++];
@@ -65,19 +58,12 @@ void sort(int* A, int n) {
     for (i = 0; i < HEXMAX; ++i) bucket[i] = 0;
     for (i = 0; i < n; ++i) output[i] = 0;
     i = 0;
-    while (i < n) bucket[(A[i++] >> 16) & 0xFFFF] += 1;
-    i = 0; last = bucket[0];
-    while (i < HEXMAX) {
-        bucket[i] = last - bucket[i++];
-        last += bucket[i];
+    while (i < n) bucket[((A[i++] >> 16) & 0xFFFF)]++;
+    last = bucket[0];
+    for (int i = 0; i < HEXMAX; ++i, last += bucket[i]) {
+        bucket[i] = last - bucket[i];
     }
-    i = 0;
-    while (i < n) {
-        temp = (A[i] >> 16) & 0xFFFF;
-        place = bucket[temp];
-        bucket[temp] += 1;
-        output[place] = A[i++];
-    }
+    for (i = 0; i < n; ++i) { output[bucket[((A[i] >> 16) & 0xFFFF)]++] = A[i]; }
     i = 0;
     while (i < n) A[i] = output[i++];
 }
