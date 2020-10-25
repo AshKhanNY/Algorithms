@@ -42,8 +42,11 @@ void sort(int* A, int n) {
     i = 0;
     while (i < n) bucket[A[i++] & 0xFFFF] += 1;
     // Corrects indices so we can place numbers into bucket in order
-    last = i = 0;
-    while (i < HEXMAX) { last += bucket[i]; bucket[i] = last - bucket[i++]; }
+    i = 0; last = bucket[0];
+    while (i < HEXMAX) {
+        bucket[i] = last - bucket[i++];
+        last += bucket[i];
+    }
     // Puts the number into output and increments bucket so it's ready to give
     // next number that has the same digit.
     i = 0;
@@ -61,8 +64,11 @@ void sort(int* A, int n) {
     for (i = 0; i < n; ++i) output[i] = 0;
     i = 0;
     while (i < n) bucket[(A[i++] >> 16) & 0xFFFF] += 1;
-    last = i = 0;
-    while (i < HEXMAX) { last += bucket[i]; bucket[i] = last - bucket[i++]; }
+    i = 0; last = bucket[0];
+    while (i < HEXMAX) {
+        bucket[i] = last - bucket[i++];
+        last += bucket[i];
+    }
     i = 0;
     while (i < n) {
         temp = (A[i] >> 16) & 0xFFFF;
