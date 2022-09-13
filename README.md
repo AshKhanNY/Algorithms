@@ -9,3 +9,4 @@ Projects related to algorithms.
 - [Radix Sort (Array Style)](radixSort.cpp)
 ### Binary Trees
 - [Preorder Traversal](PreorderTraversal.cpp)
+- [Inorder Traversal](InorderTraversal.cpp)
