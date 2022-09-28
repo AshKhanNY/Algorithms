@@ -10,3 +10,4 @@ Projects related to algorithms.
 ### Binary Trees
 - [Preorder Traversal](PreorderTraversal.cpp)
 - [Inorder Traversal](InorderTraversal.cpp)
+- [Postorder Traversal](PostorderTraversal.cpp)
